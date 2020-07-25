@@ -36,6 +36,13 @@ pub fn handle_interrupt(context: &mut Context, scause: Scause, stval: usize) {
         Trap::Exception(Exception::Breakpoint) => breakpoint(context),
         // 时钟中断
         Trap::Interrupt(Interrupt::SupervisorTimer) => supervisor_timer(context),
+        // Access non-exist address
+        Trap::Exception(Exception::LoadFault) => {
+            if stval==0x0 {
+                println!("SUCCESS!");
+            }
+            panic!();
+        },
         // 其他情况，终止当前线程
         _ => fault(context, scause, stval),
     };
